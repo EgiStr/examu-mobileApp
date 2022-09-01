@@ -1,13 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-
-  Dimensions,
-  RefreshControl,
-  FlatList,
-  
-  Text,
-  View,
-} from 'react-native';
+import {Dimensions, RefreshControl, FlatList, Text, View} from 'react-native';
 import axiosApiInstance from '../../services/axios/axiosApi';
 import ListUlangan from '../components/ListUlangan';
 import ProfileBoxHome from '../components/ProfileBoxHome';
@@ -16,11 +8,10 @@ import ErrorPage from '../shared/PageNotFound';
 import LoadingScreen from '../shared/LoadingScreen';
 import {globalColor} from '../styles/global';
 import {baseURL, pusher_app_cluster, pusher_app_key} from '../../temp/config';
-
-import Pusher from 'pusher-js/react-native';
+import Pusher from 'pusher-js/react-native'
 import LoadingOverlay from '../components/LoadingOverlay';
 
-const home = ({navigation}) => {
+const Home = ({navigation}) => {
   const [user, setUser] = useState(null);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
@@ -217,5 +208,4 @@ const home = ({navigation}) => {
   );
 };
 
-export default home;
-
+export default Home;

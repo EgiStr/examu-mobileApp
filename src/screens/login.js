@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {TouchableOpacity, StyleSheet, View, Button, Text} from 'react-native';
 import {GlobalContext} from '../../store/store';
-
+import axios from 'axios';
 import TextInput from '../components/TextInput';
 import emailValidator from '../helpers/emailValidator';
 import Login from '../helpers/loginFunction';
@@ -22,8 +22,6 @@ const LoginScreen = ({navigation}) => {
       return;
     }
     try {
-      // create login function
-
       const isLogin = await Login(email.value, password.value);
       if (isLogin) {
         dispatch({type: 'LOGIN'});
@@ -58,7 +56,7 @@ const LoginScreen = ({navigation}) => {
       />
 
       <Button
-        style={{marginTop:20}}
+        style={{marginTop: 20}}
         color={globalColor.activeColor}
         title={'LOGIN'}
         onPress={onLoginPressed}
@@ -90,7 +88,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     marginTop: 10,
-    justifyContent:"center"
+    justifyContent: 'center',
   },
   forgot: {
     fontSize: 13,

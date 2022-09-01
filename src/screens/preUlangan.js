@@ -9,7 +9,7 @@ import {baseURL, pusher_app_cluster, pusher_app_key} from '../../temp/config';
 import getCredentials from '../helpers/setCredentials';
 
 
-export default function preUlangan({navigation, route}) {
+export default function PreUlangan({navigation, route}) {
   const data = route.params.data;
   const [time, setTime] = React.useState(15);
 

@@ -7,7 +7,7 @@ import ProgressBar from '../components/ProgressBar';
 import ProgressBarText from '../components/ProgressBarText';
 import {getUser} from '../helpers/setCredentials';
 
-export default function ulangan({navigation, route}) {
+export default function Ulangan({navigation, route}) {
   const pusher = route.params.pusher;
   const total_time = route.params.time ? route.params.time : 15;
   const [cooldown, setCooldown] = useState(4);
