@@ -27,7 +27,7 @@ const ProfileBoxHome = ({
           clearTextOnFocus={true}
           autoCapitalize="none"
         />
-        <TouchableOpacity onPress={handleJoin}>
+        <TouchableOpacity style={styles.joinButton} onPress={handleJoin}>
           <Text style={styles.joinText}>Join</Text>
         </TouchableOpacity>
       </View>
@@ -73,21 +73,23 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 200,
     height: 40,
-    borderColor: 'white',
+    borderColor: globalColor.activeColor,
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
     color: 'white',
   },
   joinText: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'white',
-    marginRight: 12,
+    marginHorizontal:5
   },
   joinButton: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
+    flex:1,
+    justifyContent:"center",
+    alignContent:"center",
+    backgroundColor:globalColor.activeColor,
+    
   },
 
   joinInput: {
@@ -96,13 +98,13 @@ const styles = StyleSheet.create({
   },
 
   searchView: {
-    marginTop: 20,
+    marginTop: 5,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
     height: 40,
-    borderColor: 'white',
+    borderColor: globalColor.activeColor,
     borderWidth: 1,
     borderRadius: 5,
   },

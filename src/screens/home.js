@@ -8,7 +8,7 @@ import ErrorPage from '../shared/PageNotFound';
 import LoadingScreen from '../shared/LoadingScreen';
 import {globalColor} from '../styles/global';
 import {baseURL, pusher_app_cluster, pusher_app_key} from '../../temp/config';
-import Pusher from 'pusher-js/react-native'
+import Pusher from 'pusher-js/react-native';
 import LoadingOverlay from '../components/LoadingOverlay';
 
 const Home = ({navigation}) => {
@@ -186,7 +186,9 @@ const Home = ({navigation}) => {
                 flex: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                height: Dimensions.get('window').height / 2 + 180,
+                height:
+                  Dimensions.get('window').height / 2 +
+                  Dimensions.get('window').height / 3,
               }}>
               <Text style={{color: '#fff'}}>No {search} Found</Text>
             </View>

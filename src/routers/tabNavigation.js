@@ -1,8 +1,8 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import StackHome from './stackHome';
-// import StackCreate from './stackCreate';
-// import StackProfile from './stackProfile';
+import StackCreate from './stackCreate';
+import StackProfile from './stackProfile';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {globalColor} from '../styles/global';
 
@@ -44,8 +44,8 @@ const TabsScreen = () => {
         },
       })}>
       <TabStack.Screen name={'Home'} component={StackHome} />
-      {/* <TabStack.Screen name={'Create'} component={StackCreate} />
-      <TabStack.Screen name={'Profile'} component={StackProfile} /> */}
+      <TabStack.Screen name={'Create'} component={StackCreate} />
+      <TabStack.Screen name={'Profile'} component={StackProfile} />
     </TabStack.Navigator>
   );
 };

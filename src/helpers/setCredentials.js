@@ -7,7 +7,7 @@ export const setCredentials = async keys => {
   try {
     await AsyncStorage.setItem('keys', JSON.stringify(keys));
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 };
 
@@ -18,7 +18,7 @@ export const getUser = async () => {
     const user = decodeJwt(JSON.parse(keys).access);
     return user.user    
   } catch (e) {
-    console.log(e,"user");
+    // console.log(e,"user");
   }
 };
 
@@ -30,36 +30,36 @@ async function getAccessUsingRefresh(refreshToken) {
 }
 
 async function getVerifiedKeys(keys) {
-  console.log('Loading keys from storage');
+  // console.log('Loading keys from storage');
 
   if (keys) {
-    console.log('checking access');
+    // console.log('checking access');
     if (!isTokenExpired(keys.access)) {
-      console.log('returning access');
+      // console.log('returning access');
 
       return keys;
     } else {
-      console.log('access expired');
+      // console.log('access expired');
 
-      console.log('checking refresh expiry');
+      // console.log('checking refresh expiry');
 
       if (!isTokenExpired(keys.refresh)) {
-        console.log('fetching access using refresh');
+        // console.log('fetching access using refresh');
 
-        console.log('fetching access using refresh');
+        // console.log('fetching access using refresh');
 
         const response = await getAccessUsingRefresh(keys.refresh);
         await setCredentials(response);
 
         return response;
       } else {
-        console.log('refresh expired, please login');
+        // console.log('refresh expired, please login');
 
         return null;
       }
     }
   } else {
-    console.log('access not available please login');
+    // console.log('access not available please login');
 
     return null;
   }
@@ -77,7 +77,7 @@ const getCredentials = async () => {
       return null;
     }
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
 
   return null;

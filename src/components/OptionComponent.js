@@ -77,7 +77,7 @@ const OptionComponent = ({
     axiosApiInstance
       .post('/ulangan/placeanswer/', data)
       .then(res => {
-        console.log(res.data);
+        
       })
       .catch(err => {
         console.log(err);

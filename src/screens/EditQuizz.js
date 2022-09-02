@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import EditUlangan from '../components/EditUlangan';
 import QuestionContainer from '../components/QuestionContainer';
-import {dismensions, globalColor} from '../styles/global';
+import {globalColor} from '../styles/global';
 import axiosApiInstance from '../../services/axios/axiosApi';
 import LoadingOverlay from '../components/LoadingOverlay';
 import {useIsFocused} from '@react-navigation/native';
@@ -32,7 +32,6 @@ const EditQuizz = ({navigation, route}) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log(error);
     }
   };
 
@@ -70,9 +69,7 @@ const EditQuizz = ({navigation, route}) => {
                     ...prev,
                     question: prev.question.filter(item => item._id !== id),
                   }));
-                } else {
-                  console.log(res.data);
-                }
+                } 
               })
               .catch(err => {
                 console.log(err);
@@ -121,12 +118,12 @@ const EditQuizz = ({navigation, route}) => {
           ) : (
             <View style={{margin: 10}}>
               <TouchableOpacity
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('CreationQuestion', {
                     id_ulangan: data._id,
                     section: 0,
-                  })
-                }
+                  });
+                }}
                 style={{
                   backgroundColor: globalColor.activeColor,
                   padding: 8,

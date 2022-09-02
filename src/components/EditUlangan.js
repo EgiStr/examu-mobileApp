@@ -2,16 +2,11 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import {globalColor} from '../styles/global';
-import Dropdown from './Dropdown';
 import ModalCreate from './ModalCreate';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const EditUlangan = ({data}) => {
-  // const [selected, setSelected] = useState(data.private);
-  // const labelData = [
-  //   {label: 'Public', value: true},
-  //   {label: 'Private', value: false},
-  // ];
+
 
   const [modalVisible, setModalVisible] = useState(false);
   return (
@@ -25,7 +20,8 @@ const EditUlangan = ({data}) => {
           setModalVisible={setModalVisible}
           initialTitle={data.title}
           initialPrivate={data.private}
-          initialTopic={data.topic}>
+          initialTopic={data.topic}
+          >
           <Ionicons
             onPress={() => setModalVisible(true)}
             name="md-create"
@@ -56,7 +52,6 @@ const EditUlangan = ({data}) => {
         <Text style={{marginLeft: 10}}>
           {data.private ? 'Private' : 'Public'}
         </Text>
-        {/* <Dropdown label="Public" data={labelData} onSelect={setSelected} /> */}
       </View>
     </View>
   );

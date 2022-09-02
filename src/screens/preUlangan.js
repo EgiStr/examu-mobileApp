@@ -31,7 +31,7 @@ export default function PreUlangan({navigation, route}) {
 
     const quizChannel = pusher.subscribe(channelName);
     quizChannel.bind('pusher:subscription_error', status => {
-      console.log(status);
+  
       Alert.alert(
         'Error',
         'Subscription error occurred. Please restart the app',

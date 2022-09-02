@@ -6,6 +6,7 @@ import TextInput from '../components/TextInput';
 import axiosApiInstance from '../../services/axios/axiosApi';
 
 const QuestionModal = ({navigation, route}) => {
+
   const {id_ulangan} = route.params;
   const [title, setTitle] = useState('');
   const [state, setState] = useState({
@@ -17,7 +18,7 @@ const QuestionModal = ({navigation, route}) => {
 
   const createQuestion = async data => {
     try {
-      console.log(data);
+    
       const res = await axiosApiInstance.post('/question', data);
       if (res.status === 201) {
         navigation.navigate('EditQuizz', {id: id_ulangan});

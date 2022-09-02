@@ -23,7 +23,7 @@ const QuestionModal = ({
     correct: '',
   });
   const [title, setTitle] = useState(initialTitle);
-  console.log(modalVisible);
+
   const [answerPlus, setAnswerPlus] = useState(3);
 
   const createQuestion = async data => {

@@ -15,7 +15,7 @@ import QuizzDraft from '../components/QuizzDraft';
 import ModalCreate from '../components/ModalCreate';
 import axiosApiInstance from '../../services/axios/axiosApi';
 
-export default function create({navigation}) {
+export default function Create({navigation}) {
   const [data, setData] = useState([]);
   const [refresh, setRefresh] = useState(false);
 
@@ -53,8 +53,6 @@ export default function create({navigation}) {
               .then(res => {
                 if (res.status === 204) {
                   setData(data.filter(item => item._id !== id));
-                } else {
-                  console.log("here")
                 }
               })
               .catch(err => {
@@ -85,9 +83,9 @@ export default function create({navigation}) {
                 fetchAsync();
               })
               .catch(err => {
-                if(err.response.status === 400){
+                if (err.response.status === 400) {
                   Alert.alert('Error', err.response.data.message);
-                }              
+                }
               });
           },
         },
@@ -103,8 +101,8 @@ export default function create({navigation}) {
       <View style={styles.header}>
         <Text style={styles.headerText}>Ulangan Creator</Text>
         <ModalCreate
-
           section={0}
+          onRefresh={onRefresh}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}>
           <TouchableOpacity
@@ -118,7 +116,6 @@ export default function create({navigation}) {
               alignItems: 'center',
             }}
             onPress={() => setModalVisible(true)}>
-            {/* icon + */}
             <Ionicons
               name="ios-add"
               size={26}
@@ -151,7 +148,7 @@ export default function create({navigation}) {
                 }}>
                 <Text style={{color: '#fff'}}>No Ulangan yet</Text>
                 <Text
-                  onPress={() => console.log('click')}
+                  onPress={() => setModalVisible(true)}
                   style={{color: globalColor.activeColor}}>
                   Create
                 </Text>

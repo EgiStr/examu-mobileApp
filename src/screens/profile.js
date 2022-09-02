@@ -1,16 +1,14 @@
-import {Button, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import React, {useContext, useEffect, useState, useMemo} from 'react';
+import { StyleSheet, Text, View,} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import {getUser, setCredentials} from '../helpers/setCredentials';
 import {GlobalContext} from '../../store/store';
 import {dismensions, globalColor, globalStyles} from '../styles/global';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HistoryTes from '../components/HistoryTes';
-import CreatorHistory from '../components/CreatorHistory';
 
-export default function profile({navigation}) {
+export default function Profile({navigation}) {
   const {dispatch} = useContext(GlobalContext);
   const [user, setUser] = useState(null);
-  const [content, setContent] = useState(true);
 
   async function getUserAsync() {
     setUser(await getUser());

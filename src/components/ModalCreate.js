@@ -10,48 +10,74 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {dismensions, globalColor} from '../styles/global';
 import TextInput from './TextInput';
-import TagInput from 'react-native-tags-input';
+// import TagInput from 'react-native-tags-input';
 import axiosApiInstance from '../../services/axios/axiosApi';
+
+import Tags from 'react-native-tags';
+import {set} from 'react-native-reanimated';
 
 const ModalCreate = ({
   children,
   modalVisible,
   setModalVisible,
   section,
-  initialTitle = '',
-  initialTopic = [],
-  initialPrivate = false,
+  initialTitle,
+  initialTopic,
+  initialPrivate,
+  onRefresh,
 }) => {
-  
   const [isPrivate, setIsPrivate] = useState(initialPrivate);
   const [title, setTitle] = useState({value: initialTitle, error: ''});
   const [topic, setTopic] = useState({
-    value: {tag: '', tagsArray: initialTopic},
+    value: initialTopic,
     error: '',
   });
 
   useEffect(() => {
+   
     setTitle({value: initialTitle, error: ''});
     setTopic({
-      value: {tag: '', tagsArray: initialTopic},
+      value: initialTopic,
       error: '',
     });
     setIsPrivate(initialPrivate);
   }, [modalVisible]);
 
+  function checkIfDuplicateExists(arr) {
+    return new Set(arr).size !== arr.length;
+  }
+  function checkData(data) {
+    if (data.title.value === '' || initialTitle === '') {
+      setTitle(prev => ({...prev, error: 'judul tidak boleh kosong !!'}));
+      return;
+    }
+    if (data.topic.value === '' || initialTopic === '') {
+      setTopic(prev => ({...prev, error: 'Topic tidak boleh kosong !!'}));
+      return;
+    }
+
+    return {
+      title: title.value || initialTitle,
+      topic: topic.value || initialTopic,
+      isPrivate: isPrivate || initialPrivate,
+    };
+  }
   const updateTags = tags => {
     // lowercase all tags
-    if (tags.tagsArray.length <= 3) {
-      const lowercaseTags = tags.tagsArray.map(tag => tag.toLowerCase());
-      setTopic({...topic, value: {tag: tags.tag, tagsArray: lowercaseTags}});
-    } else {
-      setTopic(prev => ({...prev, error: 'Only 3 tags allowed'}));
+
+    if (checkIfDuplicateExists(tags)) {
+      setTopic(prev => ({...prev, error: 'Tags already exists'}));
+      return;
     }
+    const lowercaseTags = tags.map(tag => tag.toLowerCase());
+
+    setTopic({value: lowercaseTags, error: ''});
   };
 
   const createQuizz = async data => {
     try {
       const res = await axiosApiInstance.post('/ulangan', data);
+      onRefresh();
       setModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -62,6 +88,7 @@ const ModalCreate = ({
   const EditQuizz = async (data, section) => {
     try {
       const res = await axiosApiInstance.put(`/ulangan/${section}`, data);
+
       setModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -69,10 +96,10 @@ const ModalCreate = ({
     }
   };
   const onSubmitPressed = () => {
-    const data = {
+    let data = {
       title: title.value,
-      topic: topic.value.tagsArray,
-      isPrivate,
+      topic: topic.value,
+      isPrivate: isPrivate,
     };
     section === 0 ? createQuizz(data) : EditQuizz(data, section);
   };
@@ -107,38 +134,33 @@ const ModalCreate = ({
               error={!!title.error}
               errorText={title.error}
             />
-            <TagInput
-              placeholder="Press Space to add Topic"
-              label="Topic"
-              labelStyle={{color: '#fff', fontSize: 16, fontWeight: 'bold'}}
-              leftElement={
-                // tag icon
-                <Ionicons
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    alignSelf: 'center',
-                    marginTop: 10,
-                  }}
-                  name="ios-add-circle"
-                  size={24}
-                  color={globalColor.activeColor}
-                />
-              }
-              leftElementContainerStyle={{marginLeft: 3}}
-              inputContainerStyle={{
-                backgroundColor: globalColor.container,
-                color: '#fff',
-                paddingHorizontal: 5,
-                marginTop: 10,
-                borderRadius: 5,
+            <Text
+              style={{
+                alignSelf: 'flex-start',
+                marginLeft: 11,
+                marginBottom: 2,
+              }}>
+              Topic
+            </Text>
+           
+            <Tags
+              initialTags={topic.value === undefined ? initialTopic : topic.value}
+              maxNumberOfTags={3}
+              textInputProps={{
+                placeholder: 'Press Space to add Topic',
               }}
-              inputStyle={{color: '#fff'}}
-              autoCorrect={false}
-              tagStyle={styles.tag}
-              tagTextStyle={styles.tagText}
-              updateState={updateTags}
-              tags={topic.value}
+              onChangeTags={tags => updateTags(tags)}
+              containerStyle={styles.TagsInputContainer}
+              inputStyle={styles.ContainerInput}
+              renderTag={({tag, index, onPress}) => (
+                <TouchableOpacity
+                  style={styles.ContainerTag}
+                  key={`${tag}-${index}`}
+                  onPress={onPress}>
+                  <Text style={{color: 'white'}}>{tag} </Text>
+                  <Ionicons name="ios-close" size={18} color={'white'} />
+                </TouchableOpacity>
+              )}
             />
             {topic.error ? (
               <Text style={styles.error}>{topic.error}</Text>
@@ -150,7 +172,9 @@ const ModalCreate = ({
                   <View
                     style={[
                       styles.checkboxButton,
-                      isPrivate ? styles.checkboxButtonActive : null,
+                      initialPrivate || isPrivate
+                        ? styles.checkboxButtonActive
+                        : null,
                     ]}></View>
                 </View>
               </TouchableOpacity>
@@ -183,7 +207,7 @@ const ModalCreate = ({
                 onPress={() => {
                   if (title.value.trim() === '') {
                     setTitle({...title, error: 'Judul tidak boleh kosong'});
-                  } else if (topic.value.tagsArray.length === 0) {
+                  } else if (topic.value.length === 0) {
                     setTopic({...topic, error: 'Topic tidak boleh kosong'});
                   } else {
                     onSubmitPressed();
@@ -310,6 +334,47 @@ const styles = StyleSheet.create({
   },
   tagText: {
     color: '#fff',
+  },
+  TagsInputContainer: {
+    flexDirection: 'row',
+    color: '#fff',
+    marginHorizontal: 8,
+    marginBottom: 10,
+  },
+  ContainerInput: {
+    backgroundColor: globalColor.container,
+    color: '#fff',
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  ContainerTag: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: dismensions.width / 3 - 20,
+    backgroundColor: globalColor.activeColor,
+    padding: 5,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+
+  tagItem: {
+    backgroundColor: 'black',
+    flex: 1,
+    padding: 3,
+  },
+  CloseButton: {
+    height: 20,
+    width: 20,
+    backgroundColor: 'black',
+    color: 'white',
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  tagsInput: {
+    flexGrow: 1,
+    padding: 3,
   },
 });
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {globalColor} from '../styles/global';
-import create from '../screens/create';
+import Create from '../screens/create'
 import EditQuizz from '../screens/EditQuizz';
 import QuestionCreation from '../screens/QuestionCreation';
 import QuestionEdit from '../screens/QuestionEdit';
 
-const stackCreate = () => {
+const StackCreate = () => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator
@@ -27,7 +27,7 @@ const stackCreate = () => {
       }}>
       <Stack.Screen
         name="ListDraft"
-        component={create}
+        component={Create}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -52,4 +52,4 @@ const stackCreate = () => {
   );
 };
 
-export default stackCreate;
+export default StackCreate;
