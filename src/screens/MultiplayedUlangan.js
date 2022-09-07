@@ -18,30 +18,33 @@ import {GlobalContext} from '../../store/store';
 
 export default function MultiplayedUlangan({navigation, route}) {
   const {dispatch} = useContext(GlobalContext);
-  const {
-    pusher,
-    quizChannel,
-    id,
-    channelId,
-    channelName,
-    isCreator,
-    time,
-    member,
-  } = route.params;
+  const {pusher, quizChannel, id, channelId, channelName, isCreator, member} =
+    route.params;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isPlayed, setIsPlayed] = useState(false);
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(member.count);
 
   const [cooldown, setCooldown] = useState(4);
 
   const startQuiz = () => {
     setIsLoading(true);
-    setIsPlayed(true);
     getQuestions();
+    fecthEvent();
     setIsLoading(false);
   };
-
+  const fecthEvent = async () => {
+    try {
+      const res = await axiosApiInstance.post(
+        `/ulangan/multi/${id}/startEvent?channel=${channelId}`,
+        {
+          isPlaying: true,
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
   function timeoutPromise(ms, promise) {
     return new Promise((resolve, reject) => {
       // countdown timer for countdown
@@ -71,53 +74,40 @@ export default function MultiplayedUlangan({navigation, route}) {
   }
   async function getQuestions() {
     //   fecth using axiosAPi
-    const url = `/ulangan/multi/${id}?channel=${channelId}&time=${
-      time ? time : 15
-    }`;
+    const url = `/ulangan/multi/${id}?channel=${channelId}`;
     try {
-      await timeoutPromise(3000, axiosApiInstance.get(url));
-      quizChannel.trigger("startEvent", true);
+      const response = await timeoutPromise(3000, axiosApiInstance.get(url));
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-
     if (!(id && isCreator) && count > 1) {
-      pusher.unsubscribe(channelName);
       dispatch({
         type: 'SHOW_TOAST',
         payload: {show: true, message: `${channelId} is not exist`},
       });
       navigation.navigate('HomeStack');
-      return 
+      return pusher.unsubscribe(channelName);
     }
     if (isPlayed) {
-      pusher.unsubscribe(channelName);
       dispatch({
         type: 'SHOW_TOAST',
         payload: {show: true, message: `${channelId} is started`},
       });
       navigation.navigate('HomeStack');
-      return
+      return () => pusher.unsubscribe(channelName);
     }
     quizChannel.bind('pusher:member_added', member => {
-      setCount(prev => prev + 1);
-      // setMember(prev => [...prev, {id: count, username: member.info.username}]);
-
       notifyMessage(`${member.info.username} has joined the room`);
     });
     quizChannel.bind('pusher:member_removed', member => {
-      setCount(prev => prev - 1);
-      // setMember(prev =>
-      //   prev.filter(obj => obj.username !== member.info.username),
-      // );
       notifyMessage(`${member.info.username} has left the room`);
     });
-    quizChannel.bind("startEvent",data => {
-      setIsPlayed(data)
-    })
+    quizChannel.bind('startEvent', data => {
+      setIsPlayed(data.isPlaying);
+    });
     return () => pusher.unsubscribe(channelName);
   }, []);
 
@@ -160,9 +150,10 @@ export default function MultiplayedUlangan({navigation, route}) {
       navigation.setOptions({
         headerShown: false,
       });
-      navigation.navigate('home');
     }
-  }, [isPlayed, count]);
+    setCount(member.count);
+    console.log(isPlayed);
+  }, [isPlayed, member.count]);
 
   return (
     <View style={styles.container}>

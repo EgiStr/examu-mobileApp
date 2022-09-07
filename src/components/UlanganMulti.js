@@ -12,7 +12,7 @@ export default function UlanganMulti({
   quizChannel,
   pusher,
   cooldown,
-  channelName
+  channelName,
 }) {
   const total_time = time ? time : 15;
   const [data, setData] = useState({});
@@ -55,25 +55,27 @@ export default function UlanganMulti({
         });
       }, 1000);
     });
+
     return () => pusher.unsubscribe(channelName);
   }, []);
-  
-  if (
-    countdown === 0 &&
-    total_question.total !== 0 &&
-    total_question.current === total_question.total
-  ) {
-    const user = quizChannel.members.me.info;
-    quizChannel.trigger("startEvent", false);
-    pusher.unsubscribe(channelName);
-    navigation.navigate('SummaryQuiz', {
-      performance,
-      total_question,
-      user,
-      type_quiz,
-      navigation,
-    });
-  }
+
+  useEffect(() => {
+    if (
+      countdown === 0 &&
+      total_question.total !== 0 &&
+      total_question.current === total_question.total
+    ) {
+      const user = quizChannel.members.me.info;
+      pusher.unsubscribe(channelName);
+      navigation.navigate('SummaryQuiz', {
+        performance,
+        total_question,
+        user,
+        type_quiz,
+        navigation,
+      });
+    }
+  }, [countdown]);
 
   return cooldown > 0 && data ? (
     <View style={styles.overlay}>

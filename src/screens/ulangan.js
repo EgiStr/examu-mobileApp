@@ -96,28 +96,24 @@ export default function Ulangan({navigation, route}) {
     });
     return () => pusher.unsubscribe(route.params.channelName);
   }, []);
-  if (
-    countdown === 0 &&
-    total_question.total !== 0 &&
-    total_question.current === total_question.total
-  ) {
-    pusher.unsubscribe(route.params.channelName);
-    // create History
-    /* TODO LIST */
-    /* create history in server and check the fuck is updateHistory 
-        post History Model in hereee*/
-
-    // const url = ``
-    // axiosApiInstance.post()
-    navigation.navigate('SummaryQuiz', {
-      performance,
-      total_question,
-      user,
-      id: route.params.id,
-      type_quiz: route.params.type_quiz,
-      navigation,
-    });
-  }
+  
+  useEffect(() => {
+    if (
+      countdown === 0 &&
+      total_question.total !== 0 &&
+      total_question.current === total_question.total
+    ) {
+      pusher.unsubscribe(route.params.channelName);
+      navigation.navigate('SummaryQuiz', {
+        performance,
+        total_question,
+        user,
+        id: route.params.id,
+        type_quiz: route.params.type_quiz,
+        navigation,
+      });
+    }
+  }, [countdown]);
 
   return cooldown > 0 && data ? (
     <View style={styles.overlay}>
