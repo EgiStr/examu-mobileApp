@@ -1,11 +1,16 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React from 'react';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import {globalColor, globalStyles, dismensions} from '../styles/global';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
-export default function WaitPlayers({isCreator, startQuiz,code}) {
-
+export default function WaitPlayers({
+  isCreator,
+  startQuiz,
+  code,
+  count,
+  member,
+}) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -23,7 +28,33 @@ export default function WaitPlayers({isCreator, startQuiz,code}) {
         </View>
       </View>
       <View style={styles.body}>
-        
+        <View style={styles.containerPlayers}>
+          {count >= 7
+            ? Object.entries(member.members).map(([key, value], i) => (
+                <View key={i} style={styles.playersBox}>
+                  <Text style={styles.playersText}>{value.username}</Text>
+                </View>
+              ))
+            : Object.entries(member.members).map(([key, value], i) => {
+                if (i <= 7) {
+                  if (i <= 7) {
+                    return (
+                      <View key={i} style={styles.playersBox}>
+                        <Text style={styles.playersText}>{value.username}</Text>
+                      </View>
+                    );
+                  } else {
+                    <View style={styles.playersBox}>
+                      <Text style={styles.playersText}>
+                        more {count - i} players
+                      </Text>
+                    </View>;
+                  }
+                }
+                return null;
+              })}
+        </View>
+
         {isCreator ? (
           <View style={styles.action}>
             <TouchableOpacity
@@ -46,11 +77,17 @@ export default function WaitPlayers({isCreator, startQuiz,code}) {
               </Text>
             </TouchableOpacity>
           </View>
-        ):(
-            <View style={{justifyContent:"center",alignItems:"center",alignSelf:"center"}}>
-                <Text style={styles.textHeader}> Waiting for Host</Text>
-                <Text style={styles.textHeader}>to start the Quiz</Text>
-            </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+            }}>
+            <Text style={styles.textHeader}> Waiting for Host</Text>
+            <Text style={styles.textHeader}> start the Quiz</Text>
+          </View>
         )}
       </View>
     </View>
@@ -65,7 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   header: {
-    flex: 1,
+    flex: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -74,6 +111,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: dismensions.width,
+  },
+  containerPlayers: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: globalColor.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  playersBox: {
+    // get width from screen device
+    width: Dimensions.get('window').width + 10,
+    borderColor: globalColor.border,
+    padding: 10,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    flex1: 1,
   },
   action: {
     flex: 1,

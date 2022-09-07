@@ -64,6 +64,7 @@ export default function UlanganMulti({
     total_question.current === total_question.total
   ) {
     const user = quizChannel.members.me.info;
+    quizChannel.trigger("startEvent", false);
     pusher.unsubscribe(channelName);
     navigation.navigate('SummaryQuiz', {
       performance,

@@ -18,17 +18,28 @@ import {GlobalContext} from '../../store/store';
 
 export default function MultiplayedUlangan({navigation, route}) {
   const {dispatch} = useContext(GlobalContext);
-  const {pusher, quizChannel, id, channelId, channelName, isCreator, time} =
-    route.params;
+  const {
+    pusher,
+    quizChannel,
+    id,
+    channelId,
+    channelName,
+    isCreator,
+    time,
+    member,
+  } = route.params;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isPlayed, setIsPlayed] = useState(false);
   const [count, setCount] = useState(1);
+
   const [cooldown, setCooldown] = useState(4);
 
   const startQuiz = () => {
-    getQuestions();
+    setIsLoading(true);
     setIsPlayed(true);
+    getQuestions();
+    setIsLoading(false);
   };
 
   function timeoutPromise(ms, promise) {
@@ -65,19 +76,22 @@ export default function MultiplayedUlangan({navigation, route}) {
     }`;
     try {
       await timeoutPromise(3000, axiosApiInstance.get(url));
+      quizChannel.trigger("startEvent", true);
     } catch (error) {
       console.log(error);
     }
   }
 
   useEffect(() => {
-    if (count <= 1 && !isCreator) {
+
+    if (!(id && isCreator) && count > 1) {
       pusher.unsubscribe(channelName);
       dispatch({
         type: 'SHOW_TOAST',
         payload: {show: true, message: `${channelId} is not exist`},
       });
       navigation.navigate('HomeStack');
+      return 
     }
     if (isPlayed) {
       pusher.unsubscribe(channelName);
@@ -86,63 +100,77 @@ export default function MultiplayedUlangan({navigation, route}) {
         payload: {show: true, message: `${channelId} is started`},
       });
       navigation.navigate('HomeStack');
+      return
     }
     quizChannel.bind('pusher:member_added', member => {
       setCount(prev => prev + 1);
+      // setMember(prev => [...prev, {id: count, username: member.info.username}]);
+
       notifyMessage(`${member.info.username} has joined the room`);
     });
     quizChannel.bind('pusher:member_removed', member => {
       setCount(prev => prev - 1);
+      // setMember(prev =>
+      //   prev.filter(obj => obj.username !== member.info.username),
+      // );
       notifyMessage(`${member.info.username} has left the room`);
     });
+    quizChannel.bind("startEvent",data => {
+      setIsPlayed(data)
+    })
     return () => pusher.unsubscribe(channelName);
   }, []);
 
-  if (!isPlayed) {
-    navigation.setOptions({
-      title: 'Waiting Players',
-      headerShown: true,
-      headerRight: () => (
-        <View
-          style={{
-            marginRight: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          {/* icon from ionic people */}
-          <Ionicons
-            name="md-people"
-            size={27}
-            color={globalColor.activeColor}
-          />
-          <Text style={{color: '#fff'}}> {count}</Text>
-        </View>
-      ),
-      headerLeft: () => (
-        <View style={{marginLeft: 10}}>
-          <Ionicons
-            name="ios-arrow-back"
-            size={27}
-            color="white"
-            onPress={() => {
-              pusher.unsubscribe(channelName);
-              navigation.goBack();
-            }}
-          />
-        </View>
-      ),
-    });
-  } else {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }
+  useEffect(() => {
+    if (!isPlayed) {
+      navigation.setOptions({
+        title: 'Waiting Players',
+        headerShown: true,
+        headerRight: () => (
+          <View
+            style={{
+              marginRight: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            {/* icon from ionic people */}
+            <Ionicons
+              name="md-people"
+              size={27}
+              color={globalColor.activeColor}
+            />
+            <Text style={{color: '#fff'}}> {count}</Text>
+          </View>
+        ),
+        headerLeft: () => (
+          <View style={{marginLeft: 10}}>
+            <Ionicons
+              name="ios-arrow-back"
+              size={27}
+              color="white"
+              onPress={() => {
+                pusher.unsubscribe(channelName);
+                navigation.goBack();
+              }}
+            />
+          </View>
+        ),
+      });
+    } else {
+      navigation.setOptions({
+        headerShown: false,
+      });
+      navigation.navigate('home');
+    }
+  }, [isPlayed, count]);
 
   return (
     <View style={styles.container}>
       {isLoading && <LoadingOverlay />}
       {!isPlayed ? (
         <WaitPlayers
+          count={count}
+          member={member}
           isCreator={isCreator}
           startQuiz={startQuiz}
           code={channelId}

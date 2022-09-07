@@ -20,6 +20,7 @@ const HistoryTes = ({navigation}) => {
     setRefresh(true);
     try {
       const response = await axiosApiInstance.get('/history/');
+      console.log(response.data                                                                                                           )
       setData(response.data);
       setRefresh(false);
       setLoading(false);

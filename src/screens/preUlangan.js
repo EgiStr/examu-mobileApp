@@ -8,7 +8,6 @@ import generateUUID from '../helpers/uuid';
 import {baseURL, pusher_app_cluster, pusher_app_key} from '../../temp/config';
 import getCredentials from '../helpers/setCredentials';
 
-
 export default function PreUlangan({navigation, route}) {
   const data = route.params.data;
   const [time, setTime] = React.useState(15);
@@ -31,7 +30,6 @@ export default function PreUlangan({navigation, route}) {
 
     const quizChannel = pusher.subscribe(channelName);
     quizChannel.bind('pusher:subscription_error', status => {
-  
       Alert.alert(
         'Error',
         'Subscription error occurred. Please restart the app',
@@ -82,6 +80,7 @@ export default function PreUlangan({navigation, route}) {
         channelName,
         time,
         isCreator: true,
+        member,
       });
     });
   };
@@ -96,7 +95,6 @@ export default function PreUlangan({navigation, route}) {
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
           // shared with activity type of result.activityType
-
         } else {
           // shared
         }

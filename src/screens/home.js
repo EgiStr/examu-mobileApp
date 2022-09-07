@@ -32,7 +32,7 @@ const Home = ({navigation}) => {
     if (code) {
       setLoading(true);
       const {access} = await getCredentials();
-
+      let isSuccess = false;
       const pusher = new Pusher(pusher_app_key, {
         authEndpoint: `${baseURL}/pusher/auth`,
         cluster: pusher_app_cluster,
@@ -48,7 +48,6 @@ const Home = ({navigation}) => {
 
       quizChannel.bind('pusher:subscription_error', status => {
         setLoading(false);
-
         Alert.alert(
           'Error',
           'Subscription error occurred. Please restart the app',
@@ -56,6 +55,7 @@ const Home = ({navigation}) => {
       });
       quizChannel.bind('pusher:subscription_succeeded', member => {
         setLoading(false);
+
         navigation.navigate('Multiplayers', {
           pusher,
           quizChannel,
@@ -64,6 +64,7 @@ const Home = ({navigation}) => {
           channelId: code,
           time: 15,
           isCreator: false,
+          member
         });
       });
     }
@@ -159,6 +160,7 @@ const Home = ({navigation}) => {
       }}>
       {(loading && hasMore) || loading ? <LoadingOverlay /> : null}
       <FlatList
+        style={{backgroundColor: globalColor.background}}
         data={data.length > 0 ? data : []}
         renderItem={({item}) => (
           <ListUlangan navigation={navigation} data={item} />
