@@ -43,9 +43,16 @@ const RegisterScreen = ({navigation}) => {
       .then(async res => {
         const isLogin = await Login(email.value, password.value);
         dispatch({type: 'LOGIN', payload: isLogin});
+        dispatch({
+          type: 'SHOW_TOAST',
+          payload: {show: true, message: `Login.....`},
+        });
       })
       .catch(err => {
-        console.log(err)
+        dispatch({
+          type: 'SHOW_TOAST',
+          payload: {show: true, message: `Register invalid try again... `},
+        });
       });
   };
 

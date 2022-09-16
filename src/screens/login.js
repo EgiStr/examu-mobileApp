@@ -25,9 +25,16 @@ const LoginScreen = ({navigation}) => {
       const isLogin = await Login(email.value, password.value);
       if (isLogin) {
         dispatch({type: 'LOGIN'});
+        dispatch({
+          type: 'SHOW_TOAST',
+          payload: {show: true, message: `Login....`},
+        });
       }
     } catch (error) {
-      console.log(error);
+      dispatch({
+        type: 'SHOW_TOAST',
+        payload: {show: true, message: `Email or Password invalid try again `},
+      });
     }
   };
 
