@@ -26,7 +26,7 @@ const ModalCreate = ({
   initialPrivate,
   onRefresh,
 }) => {
-  const [isPrivate, setIsPrivate] = useState(initialPrivate);
+  const [isPrivate, setIsPrivate] = useState(initialPrivate || false);
   const [title, setTitle] = useState({value: initialTitle, error: ''});
   const [topic, setTopic] = useState({
     value: initialTopic,
@@ -34,7 +34,6 @@ const ModalCreate = ({
   });
 
   useEffect(() => {
-   
     setTitle({value: initialTitle, error: ''});
     setTopic({
       value: initialTopic,
@@ -59,7 +58,7 @@ const ModalCreate = ({
     return {
       title: title.value || initialTitle,
       topic: topic.value || initialTopic,
-      isPrivate: isPrivate || initialPrivate,
+      isPrivate: isPrivate === undefined ? false : isPrivate,
     };
   }
   const updateTags = tags => {
@@ -96,11 +95,11 @@ const ModalCreate = ({
     }
   };
   const onSubmitPressed = () => {
-    let data = {
+    let data = checkData({
       title: title.value,
       topic: topic.value,
       isPrivate: isPrivate,
-    };
+    });
     section === 0 ? createQuizz(data) : EditQuizz(data, section);
   };
   return (
@@ -142,9 +141,11 @@ const ModalCreate = ({
               }}>
               Topic
             </Text>
-           
+
             <Tags
-              initialTags={topic.value === undefined ? initialTopic : topic.value}
+              initialTags={
+                topic.value === undefined ? initialTopic : topic.value
+              }
               maxNumberOfTags={3}
               textInputProps={{
                 placeholder: 'Press Space to add Topic',
